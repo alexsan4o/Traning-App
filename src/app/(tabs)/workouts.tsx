@@ -17,7 +17,8 @@ import type { Goal, Level, SportId, Workout } from '../../types';
 type Tab = 'mine' | 'library' | 'online';
 
 export default function Workouts() {
-  const params = useLocalSearchParams<{ sport?: SportId; goal?: Goal }>();
+  // t — метка перехода: повторное нажатие на тот же раздел снова применяет фильтры.
+  const params = useLocalSearchParams<{ sport?: SportId; goal?: Goal; t?: string }>();
   const [tab, setTab] = useState<Tab>('library');
   const [query, setQuery] = useState('');
   const profileSport = useAppStore((s) => s.profile.sport);
@@ -26,7 +27,7 @@ export default function Workouts() {
   const [goal, setGoal] = useState<Goal | 'all'>(params.goal ?? 'all');
   const [level, setLevel] = useState<Level | 'all'>('all');
   // Переход с главной («Классические программы») открывает библиотеку с нужными фильтрами.
-  const paramsKey = `${params.sport ?? ''}|${params.goal ?? ''}`;
+  const paramsKey = `${params.sport ?? ''}|${params.goal ?? ''}|${params.t ?? ''}`;
   const [prevParamsKey, setPrevParamsKey] = useState(paramsKey);
   if (paramsKey !== prevParamsKey) {
     setPrevParamsKey(paramsKey);
@@ -61,7 +62,7 @@ export default function Workouts() {
     if (sport === 'all' || tab === 'mine') return present;
     // Сначала основные цели выбранного вида спорта (для фитнеса — масса, похудение, рельеф).
     const main = SPORTS[sport].defaultGoals;
-    return [...present.filter((g) => main.includes(g)), ...present.filter((g) => !main.includes(g))];
+    return [...main.filter((g) => present.includes(g)), ...present.filter((g) => !main.includes(g))];
   }, [bySport, sport, tab]);
   const activeGoal = goal !== 'all' && goals.includes(goal) ? goal : 'all';
 
