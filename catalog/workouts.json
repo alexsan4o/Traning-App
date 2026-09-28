@@ -1,0 +1,597 @@
+{
+  "version": 1,
+  "updatedAt": "2026-09-28",
+  "source": "Athlete Coach — онлайн-каталог готовых тренировок",
+  "workouts": [
+    {
+      "id": "karting-preseason-circuit",
+      "title": "Картинг: предсезонная круговая",
+      "sport": "karting",
+      "goal": "endurance",
+      "level": "intermediate",
+      "description": "Круговая тренировка на выносливость пилота: шея, хват, кор и пульс в гоночной зоне. 3 круга, отдых между кругами 2 минуты.",
+      "tips": [
+        "Держите пульс 75–85% от максимума — как в заезде.",
+        "Если хват «забился», сократите время удержания, но не пропускайте упражнение."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "sets": 1,
+          "restSec": 15,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "neck-warmup",
+          "sets": 1,
+          "restSec": 15,
+          "reps": 10
+        },
+        {
+          "exerciseId": "plate-steering",
+          "sets": 3,
+          "restSec": 20,
+          "durationSec": 45
+        },
+        {
+          "exerciseId": "wall-sit",
+          "sets": 3,
+          "restSec": 20,
+          "durationSec": 45
+        },
+        {
+          "exerciseId": "neck-isometric",
+          "sets": 3,
+          "restSec": 20,
+          "durationSec": 15
+        },
+        {
+          "exerciseId": "farmers-walk",
+          "sets": 3,
+          "restSec": 20,
+          "durationSec": 40
+        },
+        {
+          "exerciseId": "side-plank",
+          "sets": 3,
+          "restSec": 20,
+          "durationSec": 30
+        },
+        {
+          "exerciseId": "mountain-climbers",
+          "sets": 3,
+          "restSec": 120,
+          "durationSec": 30
+        },
+        {
+          "name": "Имитация посадки в карте",
+          "kind": "time",
+          "category": "core",
+          "muscles": [
+            "core",
+            "glutes",
+            "neck"
+          ],
+          "sets": 2,
+          "durationSec": 60,
+          "restSec": 45,
+          "tips": [
+            "Сядьте на пол, ноги вперёд, корпус отклонён назад на 30°, руки держат воображаемый руль.",
+            "Удерживайте голову ровно, как при взгляде на апекс."
+          ]
+        },
+        {
+          "exerciseId": "box-breathing",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 120
+        }
+      ]
+    },
+    {
+      "id": "karting-race-day",
+      "title": "Картинг: активация в день гонки",
+      "sport": "karting",
+      "goal": "mobility",
+      "level": "beginner",
+      "description": "15 минут перед заездом: разогреть шею и плечи, включить реакцию и настроиться. Без утомления.",
+      "tips": [
+        "Закончите за 10–15 минут до выезда на трассу.",
+        "Никаких упражнений до отказа в день гонки."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "neck-warmup",
+          "sets": 1,
+          "restSec": 10,
+          "reps": 10
+        },
+        {
+          "exerciseId": "arm-circles",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 30
+        },
+        {
+          "exerciseId": "thoracic-rotation",
+          "sets": 1,
+          "restSec": 10,
+          "reps": 6
+        },
+        {
+          "exerciseId": "band-pull-apart",
+          "sets": 2,
+          "restSec": 20,
+          "reps": 12
+        },
+        {
+          "exerciseId": "quick-feet",
+          "sets": 2,
+          "restSec": 20,
+          "durationSec": 10
+        },
+        {
+          "exerciseId": "reaction-test",
+          "sets": 2,
+          "restSec": 30,
+          "reps": 5
+        },
+        {
+          "exerciseId": "box-breathing",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 120
+        }
+      ]
+    },
+    {
+      "id": "football-goalkeeper",
+      "title": "Футбол: вратарь — реакция и взрывная сила",
+      "sport": "football",
+      "goal": "power",
+      "level": "intermediate",
+      "description": "Взрывной первый шаг, прыжок в сторону и быстрая реакция на мяч.",
+      "tips": [
+        "Каждый прыжок — максимально, полное восстановление.",
+        "Реакционные упражнения — только на свежую голову."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "sets": 1,
+          "restSec": 15,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "leg-swings",
+          "sets": 1,
+          "restSec": 15,
+          "reps": 10
+        },
+        {
+          "exerciseId": "worlds-greatest-stretch",
+          "sets": 1,
+          "restSec": 15,
+          "reps": 4
+        },
+        {
+          "exerciseId": "skater-jump",
+          "sets": 4,
+          "restSec": 75,
+          "reps": 6
+        },
+        {
+          "exerciseId": "squat-jump",
+          "sets": 3,
+          "restSec": 75,
+          "reps": 6
+        },
+        {
+          "exerciseId": "ball-drop-reaction",
+          "sets": 3,
+          "restSec": 45,
+          "reps": 10
+        },
+        {
+          "exerciseId": "lateral-shuffle",
+          "sets": 4,
+          "restSec": 40,
+          "durationSec": 15
+        },
+        {
+          "exerciseId": "side-plank",
+          "sets": 2,
+          "restSec": 30,
+          "durationSec": 30
+        },
+        {
+          "exerciseId": "hamstring-stretch",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 40
+        }
+      ]
+    },
+    {
+      "id": "football-recovery",
+      "title": "Футбол: восстановление после матча",
+      "sport": "football",
+      "goal": "recovery",
+      "level": "beginner",
+      "description": "Лёгкий день после игры: разогнать кровь, вернуть подвижность и снизить мышечное напряжение.",
+      "tips": [
+        "Пульс не выше 120 уд/мин.",
+        "Добавьте сон и воду — это половина восстановления."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "cat-cow",
+          "sets": 1,
+          "restSec": 10,
+          "reps": 10
+        },
+        {
+          "exerciseId": "glute-bridge",
+          "sets": 2,
+          "restSec": 20,
+          "reps": 12
+        },
+        {
+          "exerciseId": "bird-dog",
+          "sets": 2,
+          "restSec": 20,
+          "reps": 8
+        },
+        {
+          "exerciseId": "foam-rolling",
+          "sets": 2,
+          "restSec": 15,
+          "durationSec": 90
+        },
+        {
+          "exerciseId": "hamstring-stretch",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 45
+        },
+        {
+          "exerciseId": "hip-flexor-stretch",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 45
+        },
+        {
+          "exerciseId": "childs-pose",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 60
+        }
+      ]
+    },
+    {
+      "id": "running-tempo-strength",
+      "title": "Бег: темп + силовая",
+      "sport": "running",
+      "goal": "endurance",
+      "level": "intermediate",
+      "description": "Темповый бег 15 минут и короткий силовой блок для бегуна.",
+      "tips": [
+        "Темп «комфортно тяжело»: говорить можно только короткими фразами."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "easy-run",
+          "sets": 1,
+          "restSec": 60,
+          "durationSec": 600
+        },
+        {
+          "exerciseId": "a-skip",
+          "sets": 2,
+          "restSec": 20,
+          "durationSec": 20
+        },
+        {
+          "exerciseId": "tempo-run",
+          "sets": 1,
+          "restSec": 90,
+          "durationSec": 900
+        },
+        {
+          "exerciseId": "single-leg-rdl",
+          "sets": 2,
+          "restSec": 45,
+          "reps": 8
+        },
+        {
+          "exerciseId": "calf-raise",
+          "sets": 2,
+          "restSec": 30,
+          "reps": 20
+        },
+        {
+          "exerciseId": "plank",
+          "sets": 2,
+          "restSec": 30,
+          "durationSec": 45
+        }
+      ]
+    },
+    {
+      "id": "hockey-gym-legs",
+      "title": "Хоккей: сила ног в зале",
+      "sport": "hockey",
+      "goal": "strength",
+      "level": "advanced",
+      "description": "Силовая база для мощного катания: присед, односторонняя работа и приводящие.",
+      "tips": [
+        "Вес в приседе — такой, чтобы 2 повтора оставались «в запасе»."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "sets": 1,
+          "restSec": 15,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "worlds-greatest-stretch",
+          "sets": 1,
+          "restSec": 15,
+          "reps": 4
+        },
+        {
+          "exerciseId": "back-squat",
+          "sets": 5,
+          "restSec": 150,
+          "reps": 5
+        },
+        {
+          "exerciseId": "bulgarian-split-squat",
+          "sets": 3,
+          "restSec": 90,
+          "reps": 8
+        },
+        {
+          "exerciseId": "lateral-lunge",
+          "sets": 3,
+          "restSec": 60,
+          "reps": 8
+        },
+        {
+          "exerciseId": "copenhagen-plank",
+          "sets": 3,
+          "restSec": 45,
+          "durationSec": 25
+        },
+        {
+          "exerciseId": "pallof-press",
+          "sets": 3,
+          "restSec": 45,
+          "reps": 10
+        },
+        {
+          "exerciseId": "hip-flexor-stretch",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 40
+        }
+      ]
+    },
+    {
+      "id": "combat-explosive",
+      "title": "Единоборства: взрывная сила",
+      "sport": "combat",
+      "goal": "power",
+      "level": "intermediate",
+      "description": "Мощность удара и броска: работа таза, корпуса и плечевого пояса.",
+      "tips": [
+        "Каждый бросок — с полной скоростью и сразу расслабление."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jump-rope",
+          "sets": 2,
+          "restSec": 30,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "medball-slam",
+          "sets": 4,
+          "restSec": 60,
+          "reps": 8
+        },
+        {
+          "exerciseId": "medball-rotational-throw",
+          "sets": 3,
+          "restSec": 60,
+          "reps": 6
+        },
+        {
+          "exerciseId": "broad-jump",
+          "sets": 3,
+          "restSec": 75,
+          "reps": 5
+        },
+        {
+          "exerciseId": "push-up",
+          "sets": 3,
+          "restSec": 60,
+          "reps": 12
+        },
+        {
+          "exerciseId": "neck-isometric",
+          "sets": 2,
+          "restSec": 30,
+          "durationSec": 15
+        },
+        {
+          "exerciseId": "box-breathing",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 90
+        }
+      ]
+    },
+    {
+      "id": "general-tabata",
+      "title": "ОФП: табата 20 минут",
+      "sport": "general",
+      "goal": "endurance",
+      "level": "intermediate",
+      "description": "Интервалы 20/10 — 4 упражнения по 8 раундов. Много работы за мало времени.",
+      "tips": [
+        "Отдых 10 секунд — это не пауза для телефона.",
+        "Держите качество движений даже в конце."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "jumping-jacks",
+          "sets": 1,
+          "restSec": 15,
+          "durationSec": 60
+        },
+        {
+          "exerciseId": "inchworm",
+          "sets": 1,
+          "restSec": 15,
+          "reps": 5
+        },
+        {
+          "exerciseId": "burpee",
+          "sets": 8,
+          "reps": 6,
+          "restSec": 10
+        },
+        {
+          "exerciseId": "mountain-climbers",
+          "sets": 8,
+          "restSec": 10,
+          "durationSec": 20
+        },
+        {
+          "exerciseId": "squat",
+          "sets": 8,
+          "reps": 10,
+          "restSec": 10
+        },
+        {
+          "exerciseId": "plank",
+          "sets": 8,
+          "restSec": 10,
+          "durationSec": 20
+        },
+        {
+          "exerciseId": "childs-pose",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 60
+        }
+      ]
+    },
+    {
+      "id": "tennis-shoulder-care",
+      "title": "Теннис: профилактика плеча",
+      "sport": "tennis",
+      "goal": "prevention",
+      "level": "beginner",
+      "description": "Стабильность лопатки и вращательной манжеты — 20 минут 2–3 раза в неделю.",
+      "tips": [
+        "Лёгкое сопротивление, медленный темп, никаких рывков."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "arm-circles",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 30
+        },
+        {
+          "exerciseId": "thoracic-rotation",
+          "sets": 1,
+          "restSec": 10,
+          "reps": 8
+        },
+        {
+          "exerciseId": "band-pull-apart",
+          "sets": 3,
+          "restSec": 30,
+          "reps": 15
+        },
+        {
+          "exerciseId": "external-rotation",
+          "sets": 3,
+          "restSec": 30,
+          "reps": 12
+        },
+        {
+          "exerciseId": "face-pull",
+          "sets": 3,
+          "restSec": 30,
+          "reps": 15
+        },
+        {
+          "exerciseId": "ytw-raises",
+          "sets": 2,
+          "restSec": 30,
+          "reps": 8
+        },
+        {
+          "exerciseId": "side-plank",
+          "sets": 2,
+          "restSec": 30,
+          "durationSec": 30
+        }
+      ]
+    },
+    {
+      "id": "cycling-intervals",
+      "title": "Велоспорт: пороговые интервалы",
+      "sport": "cycling",
+      "goal": "endurance",
+      "level": "advanced",
+      "description": "4 × 6 минут на пороге с отдыхом 3 минуты — основа роста мощности.",
+      "tips": [
+        "Мощность или пульс на отрезках — ровные, без «рваного» старта."
+      ],
+      "exercises": [
+        {
+          "exerciseId": "bike-endurance",
+          "sets": 1,
+          "restSec": 60,
+          "durationSec": 600
+        },
+        {
+          "exerciseId": "bike-intervals",
+          "sets": 4,
+          "durationSec": 360,
+          "restSec": 180
+        },
+        {
+          "exerciseId": "bike-endurance",
+          "sets": 1,
+          "restSec": 60,
+          "durationSec": 600
+        },
+        {
+          "exerciseId": "hip-flexor-stretch",
+          "sets": 1,
+          "restSec": 10,
+          "durationSec": 40
+        },
+        {
+          "exerciseId": "quad-stretch",
+          "sets": 1,
+          "restSec": 0,
+          "durationSec": 30
+        }
+      ]
+    }
+  ]
+}
