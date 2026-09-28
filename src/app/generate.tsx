@@ -6,7 +6,7 @@ import { ExerciseItem } from '../components/ExerciseItem';
 import { WorkoutTimeline } from '../components/WorkoutTimeline';
 import { SportIcon } from '../components/WorkoutCard';
 import { Badge, Button, Card, Chip, ChipGroup, Field, Notice, Screen, Segmented } from '../components/ui';
-import { ALL_EQUIPMENT, ALL_GOALS, ALL_LEVELS, ALL_MUSCLES, equipmentLabels, goalLabels, levelLabels, muscleLabels } from '../data/labels';
+import { ALL_EQUIPMENT, ALL_GOALS, ALL_LEVELS, ALL_MUSCLES, equipmentLabels, goalLabels, levelDescriptions, levelLabels, muscleLabels } from '../data/labels';
 import { SPORT_LIST, SPORTS } from '../data/sports';
 import { useOnline } from '../hooks/useOnline';
 import { AiError, generateWithAi } from '../lib/ai';
@@ -111,7 +111,7 @@ export default function Generate() {
         </ChipGroup>
         <Text style={font.h3}>Цель</Text>
         <ChipGroup>
-          {ALL_GOALS.map((g) => (
+          {[...SPORTS[sport].defaultGoals, ...ALL_GOALS.filter((g) => !SPORTS[sport].defaultGoals.includes(g))].map((g) => (
             <Chip key={g} label={goalLabels[g]} selected={goal === g} onPress={() => setGoal(g)} />
           ))}
         </ChipGroup>
@@ -121,6 +121,7 @@ export default function Generate() {
       <Card>
         <Text style={font.h3}>Уровень и время</Text>
         <Segmented options={ALL_LEVELS.map((l) => ({ value: l, label: levelLabels[l] }))} value={level} onChange={setLevel} />
+        <Text style={font.small}>{levelDescriptions[level]}</Text>
         <ChipGroup>
           {DURATIONS.map((d) => (
             <Chip key={d} label={`${d} мин`} selected={duration === d} onPress={() => setDuration(d)} />

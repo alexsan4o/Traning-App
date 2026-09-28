@@ -3,9 +3,10 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Switch, Text, View } from 'react-native';
 
+import { LevelPicker } from '../../components/LevelPicker';
 import { SportIcon } from '../../components/WorkoutCard';
-import { Button, Card, Chip, ChipGroup, Field, Notice, Screen, Segmented, Stepper } from '../../components/ui';
-import { ALL_EQUIPMENT, ALL_LEVELS, equipmentLabels, levelLabels } from '../../data/labels';
+import { Button, Card, Chip, ChipGroup, Field, Notice, Screen, Stepper } from '../../components/ui';
+import { ALL_EQUIPMENT, equipmentLabels } from '../../data/labels';
 import { SPORT_LIST } from '../../data/sports';
 import { useOnline } from '../../hooks/useOnline';
 import { AI_MODEL } from '../../lib/ai';
@@ -90,12 +91,7 @@ export default function SettingsScreen() {
             />
           ))}
         </ChipGroup>
-        <Text style={[font.small, { marginTop: 6 }]}>Уровень</Text>
-        <Segmented
-          options={ALL_LEVELS.map((l) => ({ value: l, label: levelLabels[l] }))}
-          value={profile.level}
-          onChange={(level) => setProfile({ level })}
-        />
+        <LevelPicker experience={profile.experience} level={profile.level} onChange={setProfile} />
         <View style={styles.toggle}>
           <Text style={[font.body, { flex: 1 }]}>Тренировок в неделю</Text>
           <Stepper value={profile.weeklyTarget} min={1} max={14} onChange={(weeklyTarget) => setProfile({ weeklyTarget })} />

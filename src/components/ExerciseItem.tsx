@@ -8,7 +8,18 @@ import { chart, colors, font, phaseOf } from '../theme';
 import type { WorkoutExercise } from '../types';
 
 /** Строка упражнения в тренировке с раскрывающимися подсказками по технике. */
-export function ExerciseItem({ item, index, onOpen }: { item: WorkoutExercise; index: number; onOpen?: () => void }) {
+export function ExerciseItem({
+  item,
+  index,
+  onOpen,
+  onSwap,
+}: {
+  item: WorkoutExercise;
+  index: number;
+  onOpen?: () => void;
+  /** Показать кнопку замены упражнения на похожее. */
+  onSwap?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const tips = item.tips ?? [];
   return (
@@ -27,6 +38,17 @@ export function ExerciseItem({ item, index, onOpen }: { item: WorkoutExercise; i
           </Text>
         </View>
         {tips.length ? <Ionicons name={open ? 'chevron-up' : 'bulb-outline'} size={20} color={colors.warning} /> : null}
+        {onSwap ? (
+          <Pressable
+            onPress={onSwap}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={`Заменить упражнение ${item.name}`}
+            style={styles.swap}
+          >
+            <Ionicons name="swap-horizontal" size={18} color={colors.accent} />
+          </Pressable>
+        ) : null}
       </Pressable>
       {open ? (
         <View style={styles.tips}>
@@ -62,4 +84,5 @@ const styles = StyleSheet.create({
   tips: { marginLeft: 42, gap: 4, backgroundColor: colors.surfaceAlt, borderRadius: 10, padding: 10 },
   tip: { color: colors.text, fontSize: 14, lineHeight: 20 },
   link: { color: colors.primary, fontWeight: '600', marginTop: 4 },
+  swap: { padding: 6, borderRadius: 999, backgroundColor: colors.accent + '1F' },
 });

@@ -1,4 +1,6 @@
-import type { Exercise, Workout, WorkoutExercise } from '../types';
+import { levelLabels } from '../data/labels';
+import { phaseOf } from '../theme';
+import type { Exercise, Level, Workout, WorkoutExercise } from '../types';
 import { uid } from './id';
 
 /** Средняя длительность одного повтора, с. */
@@ -89,4 +91,41 @@ export function cloneWorkout(w: Workout, patch: Partial<Workout> = {}): Workout 
     updatedAt: now,
     ...patch,
   };
+}
+
+const LEVEL_ORDER: Level[] = ['beginner', 'intermediate', 'advanced'];
+
+/**
+ * Копия программы под другой уровень: на каждый шаг уровня ±1 подход и ±15% повторов (±20% времени).
+ * Для более низкого уровня добавляется отдых. Разминка и заминка не меняются.
+ */
+export function adaptToLevel(w: Workout, target: Level): Workout {
+  const d = LEVEL_ORDER.indexOf(target) - LEVEL_ORDER.indexOf(w.level);
+  if (d === 0) return w;
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, Math.round(v)));
+  const exercises = w.exercises.map((e) => {
+    if (phaseOf(e.category) === 'prep') return e;
+    const longCardio = e.kind === 'time' && (e.durationSec ?? 0) >= 300;
+    return {
+      ...e,
+      sets: longCardio ? e.sets : clamp(e.sets + d, 1, 8),
+      reps: e.kind === 'reps' && e.reps && e.reps > 1 ? clamp(e.reps * (1 + 0.15 * d), 1, 100) : e.reps,
+      durationSec:
+        e.kind === 'time' && e.durationSec
+          ? longCardio
+            ? clamp((e.durationSec * (1 + 0.15 * d)) / 60, 5, 120) * 60
+            : clamp((e.durationSec * (1 + 0.2 * d)) / 5, 1, 720) * 5
+          : e.durationSec,
+      restSec: d < 0 ? e.restSec + 15 * -d : e.restSec,
+    };
+  });
+  return cloneWorkout(
+    { ...w, exercises },
+    {
+      level: target,
+      source: 'custom',
+      title: `${w.title} · ${levelLabels[target]}`,
+      description: `${w.description} Адаптировано под уровень «${levelLabels[target]}».`.trim(),
+    },
+  );
 }

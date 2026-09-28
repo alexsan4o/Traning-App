@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ProgressRing } from '../../components/charts';
 import { SportIcon, WorkoutCard } from '../../components/WorkoutCard';
 import { Badge, Button, Card, SectionTitle, Screen, Stat, type IconName } from '../../components/ui';
+import { goalLabels, levelLabels } from '../../data/labels';
 import { BUILTIN_WORKOUTS } from '../../data/programs';
 import { GENERAL_TIPS, SPORTS } from '../../data/sports';
 import { useOnline } from '../../hooks/useOnline';
@@ -14,8 +15,17 @@ import { dayKey, formatClock, MONTHS_GENITIVE, plural } from '../../lib/date';
 import { dayStreak, weeklyStats, weekStreak } from '../../lib/stats';
 import { findWorkout, useAppStore } from '../../store/useAppStore';
 import { colors, font, radius, spacing } from '../../theme';
+import type { Goal } from '../../types';
 
 const WEEKDAYS_FULL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+
+const CLASSIC_GOALS: { goal: Goal; icon: IconName }[] = [
+  { goal: 'hypertrophy', icon: 'barbell-outline' },
+  { goal: 'fatloss', icon: 'flame-outline' },
+  { goal: 'toning', icon: 'body-outline' },
+  { goal: 'strength', icon: 'trophy-outline' },
+];
+const CLASSIC = BUILTIN_WORKOUTS.filter((w) => w.sport === 'fitness');
 
 export default function Today() {
   const profile = useAppStore((s) => s.profile);
@@ -48,8 +58,10 @@ export default function Today() {
   const suggestion = useMemo(() => {
     const recent = new Set(sessions.slice(0, 5).map((s) => s.workoutId));
     const pool = BUILTIN_WORKOUTS.filter((w) => w.sport === profile.sport);
-    return pool.find((w) => !recent.has(w.id)) ?? pool[0] ?? BUILTIN_WORKOUTS[0];
-  }, [sessions, profile.sport]);
+    // Сначала программы своего уровня, затем остальные.
+    const ranked = [...pool.filter((w) => w.level === profile.level), ...pool.filter((w) => w.level !== profile.level)];
+    return ranked.find((w) => !recent.has(w.id)) ?? ranked[0] ?? BUILTIN_WORKOUTS[0];
+  }, [sessions, profile.sport, profile.level]);
 
   const tips = [...sport.tips, ...GENERAL_TIPS];
   const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
@@ -148,6 +160,23 @@ export default function Today() {
         <QuickAction icon="construct-outline" label="Конструктор" hint="своя тренировка" onPress={() => router.push('/workout/edit')} />
         <QuickAction icon="flash-outline" label="Тест реакции" hint="для пилотов и игроков" onPress={() => router.push('/reaction')} />
         <QuickAction icon="calendar-outline" label="Запланировать" hint="в календаре" onPress={() => router.push('/calendar')} />
+      </View>
+
+      <SectionTitle title="Классические программы" />
+      <View style={styles.quickGrid}>
+        {CLASSIC_GOALS.map(({ goal, icon }) => {
+          const count = CLASSIC.filter((w) => w.goal === goal).length;
+          const mine = CLASSIC.filter((w) => w.goal === goal && w.level === profile.level).length;
+          return (
+            <QuickAction
+              key={goal}
+              icon={icon}
+              label={goalLabels[goal]}
+              hint={`${count} ${plural(count, 'программа', 'программы', 'программ')}${mine ? ` · ${mine} для уровня «${levelLabels[profile.level]}»` : ''}`}
+              onPress={() => router.push({ pathname: '/workouts', params: { sport: 'fitness', goal } })}
+            />
+          );
+        })}
       </View>
 
       <Card style={{ borderColor: colors.warning + '55' }}>

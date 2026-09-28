@@ -2,13 +2,14 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { LevelPicker } from '../components/LevelPicker';
 import { SportIcon } from '../components/WorkoutCard';
-import { Button, Card, Chip, ChipGroup, Field, Screen, Segmented, Stepper } from '../components/ui';
-import { ALL_EQUIPMENT, ALL_LEVELS, equipmentLabels, levelLabels } from '../data/labels';
+import { Button, Card, Chip, ChipGroup, Field, Screen, Stepper } from '../components/ui';
+import { ALL_EQUIPMENT, equipmentLabels } from '../data/labels';
 import { SPORT_LIST } from '../data/sports';
 import { useAppStore } from '../store/useAppStore';
 import { font } from '../theme';
-import type { Equipment, Level, SportId } from '../types';
+import type { Equipment, Experience, Level, SportId } from '../types';
 
 export default function Onboarding() {
   const profile = useAppStore((s) => s.profile);
@@ -16,6 +17,7 @@ export default function Onboarding() {
   const [name, setName] = useState(profile.name);
   const [sport, setSport] = useState<SportId>(profile.sport);
   const [level, setLevel] = useState<Level>(profile.level);
+  const [experience, setExperience] = useState<Experience | undefined>(profile.experience);
   const [equipment, setEquipment] = useState<Equipment[]>(profile.equipment);
   const [weeklyTarget, setWeeklyTarget] = useState(profile.weeklyTarget);
 
@@ -23,7 +25,7 @@ export default function Onboarding() {
     setEquipment((cur) => (cur.includes(e) ? cur.filter((x) => x !== e) : [...cur, e]));
 
   const finish = () => {
-    setProfile({ name: name.trim(), sport, level, equipment, weeklyTarget, onboarded: true });
+    setProfile({ name: name.trim(), sport, level, experience, equipment, weeklyTarget, onboarded: true });
     router.replace('/');
   };
 
@@ -57,7 +59,15 @@ export default function Onboarding() {
 
       <Card>
         <Text style={font.h3}>Уровень подготовки</Text>
-        <Segmented options={ALL_LEVELS.map((l) => ({ value: l, label: levelLabels[l] }))} value={level} onChange={setLevel} />
+        <Text style={font.dim}>Сколько вы тренируетесь регулярно? Уровень определится по стажу.</Text>
+        <LevelPicker
+          experience={experience}
+          level={level}
+          onChange={(p) => {
+            setExperience(p.experience);
+            setLevel(p.level);
+          }}
+        />
       </Card>
 
       <Card>
