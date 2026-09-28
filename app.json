@@ -27,6 +27,11 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
+      "name": "Athlete Coach",
+      "lang": "ru",
+      "themeColor": "#0B0F14",
+      "backgroundColor": "#0B0F14",
+      "description": "Тренировки для спортсменов: таймер отдыха, счётчик подходов, календарь, ИИ-тренер.",
       "favicon": "./assets/favicon.png",
       "output": "single"
     },
