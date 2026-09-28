@@ -17,7 +17,7 @@ import { confirm, notify } from '../../lib/confirm';
 import { addDays, dayKey, formatDateTime, formatDay, plural } from '../../lib/date';
 import { getApiKey } from '../../lib/secure';
 import { shareText } from '../../lib/share';
-import { cloneWorkout, estimateMinutes, totalSets } from '../../lib/workout';
+import { adaptToLevel, cloneWorkout, estimateMinutes, totalSets } from '../../lib/workout';
 import { useAppStore, useWorkout } from '../../store/useAppStore';
 import { useDraftStore } from '../../store/useDraftStore';
 import { colors, font, spacing } from '../../theme';
@@ -33,6 +33,7 @@ export default function WorkoutDetails() {
   const saveWorkout = useAppStore((s) => s.saveWorkout);
   const scheduleWorkout = useAppStore((s) => s.scheduleWorkout);
   const aiEnabled = useAppStore((s) => s.settings.aiEnabled);
+  const userLevel = useAppStore((s) => s.profile.level);
   const sessions = useAppStore((s) => s.sessions);
   const history = useMemo(() => sessions.filter((x) => x.workoutId === id), [sessions, id]);
   const setDraft = useDraftStore((s) => s.setDraft);
@@ -125,6 +126,25 @@ export default function WorkoutDetails() {
       </View>
       {workout.description ? <Text style={font.dim}>{workout.description}</Text> : null}
 
+      {workout.level !== userLevel ? (
+        <Card style={{ borderColor: colors.accent + '66' }}>
+          <Text style={font.body}>
+            Программа рассчитана на уровень «{levelLabels[workout.level]}», ваш уровень — «{levelLabels[userLevel]}».
+          </Text>
+          <Button
+            title={`Адаптировать под уровень «${levelLabels[userLevel]}»`}
+            icon="trending-up"
+            variant="secondary"
+            small
+            onPress={() => {
+              const adapted = adaptToLevel(workout, userLevel);
+              saveWorkout(adapted);
+              router.push(`/workout/${adapted.id}`);
+            }}
+          />
+        </Card>
+      ) : null}
+
       <Button
         title="Начать тренировку"
         icon="play"
@@ -150,11 +170,21 @@ export default function WorkoutDetails() {
 
       <Card>
         <SectionTitle title="Упражнения" />
-        <Text style={font.small}>Нажмите на упражнение, чтобы увидеть подсказки по технике.</Text>
+        <Text style={font.small}>
+          Нажмите на упражнение, чтобы увидеть подсказки по технике. Кнопка ⇄ заменяет упражнение на похожее.
+        </Text>
         {workout.exercises.map((e, i) => {
           const openable = !!getBuiltinExercise(e.exerciseId) || e.exerciseId.startsWith('wger_');
           return (
-            <ExerciseItem key={e.uid} item={e} index={i} onOpen={openable ? () => router.push(`/exercise/${e.exerciseId}`) : undefined} />
+            <ExerciseItem
+              key={e.uid}
+              item={e}
+              index={i}
+              onOpen={openable ? () => router.push(`/exercise/${e.exerciseId}`) : undefined}
+              onSwap={() =>
+                router.push({ pathname: '/exercise-swap', params: { mode: 'workout', workoutId: workout.id, uid: e.uid } })
+              }
+            />
           );
         })}
       </Card>

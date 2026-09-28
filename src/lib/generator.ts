@@ -41,6 +41,10 @@ const DOSAGE: Record<Goal, Dosage> = {
   mobility: { categories: ['mobility', 'cooldown', 'core'], extra: ['warmup'], sets: [1, 2, 2], reps: [6, 8, 10], timeSec: [30, 40, 45], rest: [15, 15, 15], maxSets: 3, maxMin: 60 },
   recovery: { categories: ['mobility', 'cooldown'], extra: ['core', 'warmup'], sets: [1, 1, 2], reps: [6, 8, 8], timeSec: [40, 45, 60], rest: [10, 10, 10], maxSets: 3, maxMin: 45 },
   prevention: { categories: ['strength', 'core', 'mobility'], extra: ['power'], sets: [2, 3, 3], reps: [8, 10, 12], timeSec: [20, 30, 40], rest: [45, 45, 45], maxSets: 5, maxMin: 90 },
+  // Классика: гипертрофия 8–12 повторов, жиросжигание — круговой формат с коротким отдыхом, рельеф — многоповторка.
+  hypertrophy: { categories: ['strength', 'core'], extra: ['power'], sets: [3, 4, 4], reps: [12, 10, 8], timeSec: [30, 40, 45], rest: [60, 75, 90], maxSets: 5, maxMin: 120 },
+  fatloss: { categories: ['endurance', 'power', 'core'], extra: ['strength', 'agility'], sets: [2, 3, 4], reps: [15, 15, 20], timeSec: [30, 40, 45], rest: [30, 25, 20], maxSets: 5, maxMin: 75 },
+  toning: { categories: ['strength', 'core'], extra: ['endurance'], sets: [3, 3, 4], reps: [15, 15, 15], timeSec: [30, 40, 45], rest: [45, 40, 30], maxSets: 5, maxMin: 90 },
 };
 
 /** Фактическая длительность, под которую строится тренировка (с учётом разумного предела цели). */
@@ -58,6 +62,9 @@ const GOAL_TIPS: Record<Goal, string> = {
   mobility: 'Двигайтесь плавно, дышите глубоко, без боли.',
   recovery: 'Лёгкий день: цель — чувствовать себя лучше после тренировки, чем до неё.',
   prevention: 'Регулярность важнее интенсивности — 2–3 раза в неделю.',
+  hypertrophy: 'Работайте в 8–12 повторах почти до отказа и добавляйте вес, когда верхняя граница даётся легко.',
+  fatloss: 'Держите высокий темп и короткий отдых; результат решает дефицит калорий, тренировка его усиливает.',
+  toning: 'Многоповторная работа с умеренным весом и контролем движения; следите за питанием.',
 };
 
 const LEVEL_INDEX: Record<Level, 0 | 1 | 2> = { beginner: 0, intermediate: 1, advanced: 2 };
@@ -125,7 +132,13 @@ export function generateWorkout(req: GenerateRequest): Workout {
   const pool = BUILTIN_EXERCISES.filter((e) => hasEquipment(e, req.equipment));
   const durationMin = effectiveDuration(req.goal, req.durationMin);
   const totalBudget = durationMin * 60;
-  const sportScore = (e: Exercise) => (e.sports.includes(req.sport) ? 3 : e.sports.includes('general') ? 0.5 : -1);
+  // Для фитнеса подходят и универсальные упражнения ОФП.
+  const sportScore = (e: Exercise) =>
+    e.sports.includes(req.sport) || (req.sport === 'fitness' && e.sports.includes('general'))
+      ? 3
+      : e.sports.includes('general')
+        ? 0.5
+        : -1;
 
   // ——— Разминка ———
   const warmCount = durationMin <= 20 ? 2 : 3;
@@ -163,6 +176,8 @@ export function generateWorkout(req: GenerateRequest): Workout {
     score += sportScore(e);
     score += Math.min(2, e.muscles.filter((m) => sport.priorityMuscles.includes(m)).length);
     score += e.muscles.filter((m) => focus.includes(m)).length * 2;
+    // Для массы и силы предпочитаем упражнения с отягощением, если оно есть.
+    if ((req.goal === 'hypertrophy' || req.goal === 'strength') && e.equipment.length > 0) score += 1;
     score -= (muscleUse.get(e.muscles[0]) ?? 0) * 1.5;
     return score + rng() * 1.5;
   };

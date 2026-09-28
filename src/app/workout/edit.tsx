@@ -123,6 +123,13 @@ export default function EditWorkout() {
               </Text>
               <IconButton icon="arrow-up" label="Выше" size={18} onPress={() => move(i, -1)} />
               <IconButton icon="arrow-down" label="Ниже" size={18} onPress={() => move(i, 1)} />
+              <IconButton
+                icon="swap-horizontal"
+                label="Заменить на похожее"
+                size={18}
+                color={colors.accent}
+                onPress={() => router.push({ pathname: '/exercise-swap', params: { mode: 'draft', uid: e.uid } })}
+              />
               <IconButton icon="trash-outline" label="Удалить" size={18} color={colors.danger} onPress={() => remove(e.uid)} />
             </View>
             <View style={styles.steppers}>

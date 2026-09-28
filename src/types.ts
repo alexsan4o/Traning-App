@@ -8,6 +8,7 @@ export type SportId =
   | 'combat'
   | 'swimming'
   | 'cycling'
+  | 'fitness'
   | 'general';
 
 export type MuscleGroup =
@@ -51,7 +52,8 @@ export type Equipment =
   | 'cones'
   | 'rope'
   | 'roller'
-  | 'bike';
+  | 'bike'
+  | 'machine';
 
 export type Goal =
   | 'strength'
@@ -62,9 +64,16 @@ export type Goal =
   | 'reaction'
   | 'mobility'
   | 'recovery'
-  | 'prevention';
+  | 'prevention'
+  | 'hypertrophy'
+  | 'fatloss'
+  | 'toning';
 
+/** Уровни: beginner — «Базовый», intermediate — «Продвинутый», advanced — «Профи». */
 export type Level = 'beginner' | 'intermediate' | 'advanced';
+
+/** Тренировочный стаж, по которому определяется уровень. */
+export type Experience = 'lt6m' | '6to12m' | '1to3y' | '3to5y' | 'gt5y';
 
 /** reps — подход считается повторениями, time — подход по времени (удержание, интервал). */
 export type ExerciseKind = 'reps' | 'time';
@@ -169,6 +178,7 @@ export interface Profile {
   level: Level;
   equipment: Equipment[];
   weeklyTarget: number;
+  experience?: Experience;
   onboarded: boolean;
 }
 
@@ -194,6 +204,8 @@ export interface ActiveSession {
   /** Момент окончания отдыха (epoch ms), если сейчас идёт отдых. */
   restEndsAt?: number;
   restTotalSec?: number;
+  /** Упражнения, заменённые только в этой тренировке (ключ — uid упражнения в комплексе). */
+  overrides?: Record<string, WorkoutExercise>;
 }
 
 export interface ReactionResult {

@@ -45,8 +45,14 @@ export default function Player() {
   useEffect(() => () => void cancelRestEnd(), []);
 
   const session = active && workout && active.workoutId === workout.id ? active : null;
-  const exIdx = session ? Math.min(session.exerciseIndex, workout!.exercises.length - 1) : 0;
-  const item = workout?.exercises[exIdx];
+  // Упражнения с учётом замен, сделанных только в этой тренировке.
+  const overrides = session?.overrides;
+  const exercises = useMemo(
+    () => (workout?.exercises ?? []).map((e) => overrides?.[e.uid] ?? e),
+    [workout?.exercises, overrides],
+  );
+  const exIdx = session ? Math.min(session.exerciseIndex, exercises.length - 1) : 0;
+  const item = exercises[exIdx];
   const log = session?.logs[exIdx];
 
   const [count, setCount] = useState(0);
@@ -77,10 +83,11 @@ export default function Player() {
 
   // Сброс полей ввода при переходе к новому подходу или упражнению (обновление состояния во время рендера).
   const setNumber = (log?.sets.length ?? 0) + 1;
-  const setKey = `${item?.uid ?? ''}-${setNumber}`;
+  const itemKey = `${item?.uid ?? ''}|${item?.exerciseId ?? ''}`;
+  const setKey = `${itemKey}|${setNumber}`;
   const [prevSetKey, setPrevSetKey] = useState<string | null>(null);
   if (item && prevSetKey !== setKey) {
-    const itemChanged = prevSetKey?.split('-').slice(0, -1).join('-') !== item.uid;
+    const itemChanged = !prevSetKey?.startsWith(`${itemKey}|`);
     setPrevSetKey(setKey);
     setCount(0);
     setWorkEndsAt(null);
@@ -158,7 +165,7 @@ export default function Player() {
   const setsDone = session.logs.reduce((a, l) => a + l.sets.length, 0);
   const setsTotal = totalSets(workout);
   const elapsed = (now - new Date(session.startedAt).getTime()) / 1000;
-  const isLastExercise = exIdx === workout.exercises.length - 1;
+  const isLastExercise = exIdx === exercises.length - 1;
   const tips = item.tips ?? [];
 
   function finish(logs: ExerciseLog[] = session!.logs) {
@@ -191,7 +198,7 @@ export default function Player() {
     const nextIdx = exerciseDone ? exIdx + 1 : exIdx;
     const rest = item!.restSec;
     if (rest > 0) {
-      const next = workout!.exercises[nextIdx];
+      const next = exercises[nextIdx];
       updateActive({ logs, exerciseIndex: nextIdx, restEndsAt: Date.now() + rest * 1000, restTotalSec: rest });
       scheduleRestEnd(rest, next.name);
     } else {
@@ -245,7 +252,7 @@ export default function Player() {
 
   const goTo = (idx: number) => {
     cancelRestEnd();
-    updateActive({ exerciseIndex: Math.max(0, Math.min(workout.exercises.length - 1, idx)), restEndsAt: undefined, restTotalSec: undefined });
+    updateActive({ exerciseIndex: Math.max(0, Math.min(exercises.length - 1, idx)), restEndsAt: undefined, restTotalSec: undefined });
   };
 
   const undoSet = () => {
@@ -275,7 +282,7 @@ export default function Player() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.exerciseDots}>
-          {workout.exercises.map((e, i) => {
+          {exercises.map((e, i) => {
             const l = session.logs[i];
             const done = l && l.sets.length >= e.sets;
             return (
@@ -331,6 +338,17 @@ export default function Player() {
               <View style={styles.metaRow}>
                 <Badge label={`Подход ${setNumber} из ${item.sets}`} color={colors.primary} />
                 <Text style={font.dim}>{describeTarget(item)}</Text>
+                <Pressable
+                  onPress={() =>
+                    router.push({ pathname: '/exercise-swap', params: { mode: 'session', workoutId: workout.id, uid: item.uid } })
+                  }
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  style={styles.swapButton}
+                >
+                  <Ionicons name="swap-horizontal" size={14} color={colors.accent} />
+                  <Text style={styles.swapText}>Заменить</Text>
+                </Pressable>
               </View>
               <View style={styles.setDots}>
                 {Array.from({ length: item.sets }).map((_, i) => (
@@ -463,6 +481,16 @@ const styles = StyleSheet.create({
   counter: { borderRadius: 999 },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap', justifyContent: 'center' },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' },
+  swapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accent + '1F',
+  },
+  swapText: { color: colors.accent, fontSize: 13, fontWeight: '600' },
   phaseDot: { width: 10, height: 10, borderRadius: 5 },
   setDots: { flexDirection: 'row', gap: 6, alignItems: 'center' },
   setDot: { width: 22, height: 8, borderRadius: 4, backgroundColor: colors.surfaceAlt },

@@ -1,25 +1,41 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { SportIcon, WorkoutCard } from '../../components/WorkoutCard';
 import { Button, Card, Chip, ChipGroup, EmptyState, Field, Notice, Screen, Segmented } from '../../components/ui';
+import { ALL_GOALS, ALL_LEVELS, goalLabels, levelLabels } from '../../data/labels';
 import { BUILTIN_WORKOUTS } from '../../data/programs';
-import { SPORT_LIST } from '../../data/sports';
+import { SPORT_LIST, SPORTS } from '../../data/sports';
 import { useOnline } from '../../hooks/useOnline';
 import { fetchCatalog } from '../../lib/catalog';
 import { formatDateTime } from '../../lib/date';
 import { useAppStore } from '../../store/useAppStore';
 import { colors, font } from '../../theme';
-import type { SportId, Workout } from '../../types';
+import type { Goal, Level, SportId, Workout } from '../../types';
 
 type Tab = 'mine' | 'library' | 'online';
 
 export default function Workouts() {
+  const params = useLocalSearchParams<{ sport?: SportId; goal?: Goal }>();
   const [tab, setTab] = useState<Tab>('library');
   const [query, setQuery] = useState('');
   const profileSport = useAppStore((s) => s.profile.sport);
-  const [sport, setSport] = useState<SportId | 'all'>(profileSport);
+  const profileLevel = useAppStore((s) => s.profile.level);
+  const [sport, setSport] = useState<SportId | 'all'>(params.sport ?? profileSport);
+  const [goal, setGoal] = useState<Goal | 'all'>(params.goal ?? 'all');
+  const [level, setLevel] = useState<Level | 'all'>('all');
+  // Переход с главной («Классические программы») открывает библиотеку с нужными фильтрами.
+  const paramsKey = `${params.sport ?? ''}|${params.goal ?? ''}`;
+  const [prevParamsKey, setPrevParamsKey] = useState(paramsKey);
+  if (paramsKey !== prevParamsKey) {
+    setPrevParamsKey(paramsKey);
+    if (params.sport || params.goal) {
+      setTab('library');
+      setSport(params.sport ?? 'all');
+      setGoal(params.goal ?? 'all');
+    }
+  }
   const workouts = useAppStore((s) => s.workouts);
   const favoriteIds = useAppStore((s) => s.favoriteIds);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
@@ -35,15 +51,30 @@ export default function Workouts() {
     [tab, workouts, catalog],
   );
 
+  const bySport = useMemo(
+    () => (tab === 'mine' || sport === 'all' ? source : source.filter((w) => w.sport === sport)),
+    [source, sport, tab],
+  );
+  // Показываем только цели, для которых в выбранном разделе есть программы.
+  const goals = useMemo(() => {
+    const present = ALL_GOALS.filter((g) => bySport.some((w) => w.goal === g));
+    if (sport === 'all' || tab === 'mine') return present;
+    // Сначала основные цели выбранного вида спорта (для фитнеса — масса, похудение, рельеф).
+    const main = SPORTS[sport].defaultGoals;
+    return [...present.filter((g) => main.includes(g)), ...present.filter((g) => !main.includes(g))];
+  }, [bySport, sport, tab]);
+  const activeGoal = goal !== 'all' && goals.includes(goal) ? goal : 'all';
+
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const filtered = source.filter(
+    const filtered = bySport.filter(
       (w) =>
-        (sport === 'all' || w.sport === sport || tab === 'mine') &&
+        (activeGoal === 'all' || w.goal === activeGoal) &&
+        (level === 'all' || w.level === level) &&
         (!q || w.title.toLowerCase().includes(q) || w.exercises.some((e) => e.name.toLowerCase().includes(q))),
     );
     return [...filtered].sort((a, b) => Number(favoriteIds.includes(b.id)) - Number(favoriteIds.includes(a.id)));
-  }, [source, query, sport, tab, favoriteIds]);
+  }, [bySport, query, activeGoal, level, favoriteIds]);
 
   const refreshCatalog = async () => {
     setLoading(true);
@@ -95,6 +126,27 @@ export default function Workouts() {
         </ChipGroup>
       ) : null}
 
+      {goals.length > 1 ? (
+        <ChipGroup>
+          <Chip label="Любая цель" selected={activeGoal === 'all'} onPress={() => setGoal('all')} />
+          {goals.map((g) => (
+            <Chip key={g} label={goalLabels[g]} selected={activeGoal === g} onPress={() => setGoal(g)} />
+          ))}
+        </ChipGroup>
+      ) : null}
+
+      <ChipGroup>
+        <Chip label="Любой уровень" selected={level === 'all'} onPress={() => setLevel('all')} />
+        {ALL_LEVELS.map((l) => (
+          <Chip
+            key={l}
+            label={l === profileLevel ? `${levelLabels[l]} · мой` : levelLabels[l]}
+            selected={level === l}
+            onPress={() => setLevel(l)}
+          />
+        ))}
+      </ChipGroup>
+
       {tab === 'online' ? (
         <Card>
           <Text style={font.h3}>Онлайн-каталог</Text>
@@ -133,7 +185,7 @@ export default function Workouts() {
           text="Сгенерируйте тренировку, соберите свою в конструкторе или сохраните копию из библиотеки."
         />
       ) : (
-        <EmptyState icon="search-outline" title="Ничего не найдено" text="Попробуйте другой вид спорта или запрос." />
+        <EmptyState icon="search-outline" title="Ничего не найдено" text="Попробуйте другой вид спорта, цель, уровень или запрос." />
       )}
     </Screen>
   );

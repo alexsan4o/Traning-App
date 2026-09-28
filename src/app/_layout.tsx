@@ -66,6 +66,7 @@ export default function RootLayout() {
                   name="exercise-picker"
                   options={{ title: 'Добавить упражнения', presentation: 'modal' }}
                 />
+                <Stack.Screen name="exercise-swap" options={{ title: 'Замена упражнения', presentation: 'modal' }} />
                 <Stack.Screen name="session/[id]" options={{ title: 'Запись тренировки' }} />
                 <Stack.Screen name="reaction" options={{ title: 'Тест реакции' }} />
                 <Stack.Screen name="import" options={{ title: 'Импорт', presentation: 'modal' }} />
