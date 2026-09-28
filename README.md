@@ -37,7 +37,21 @@
 - **Тест реакции** в двух режимах: «старт гонки» с пятью огнями и «смена цвета».
 - **Цель на неделю**, серии дней и недель, совет дня по виду спорта.
 
-## Запуск
+## Установка на Android
+
+Готовый APK собирается автоматически при каждом изменении ветки `main`:
+
+**[Скачать последнюю версию (APK)](https://github.com/alexsan4o/Traning-App/releases/latest/download/athlete-coach.apk)** · [все сборки](https://github.com/alexsan4o/Traning-App/releases)
+
+1. Откройте ссылку на телефоне и скачайте `athlete-coach.apk`.
+2. Откройте файл. Android попросит разрешить установку из этого источника (браузера или «Файлов») — разрешите.
+3. Новые версии ставятся поверх старой, данные сохраняются.
+
+Сборку выполняет workflow [`android-apk.yml`](.github/workflows/android-apk.yml) (`expo prebuild` + Gradle, без аккаунтов и секретов). Её можно запустить и вручную: Actions → Android APK → Run workflow.
+
+На iPhone отдельное приложение без платного аккаунта Apple Developer установить нельзя — используйте Expo Go (см. ниже) или сборку через EAS.
+
+## Запуск для разработки
 
 Нужен Node.js 20+.
 
@@ -48,9 +62,9 @@ npx expo start
 
 Отсканируйте QR-код приложением **Expo Go** на Android или iOS. Все используемые модули входят в Expo Go, отдельная сборка для разработки не нужна. Команда `npx expo start --web` открывает веб-версию для быстрой проверки интерфейса.
 
-### Сборка APK / IPA
+### Сборка через EAS (Android и iOS)
 
-Сборки выполняются через [EAS Build](https://docs.expo.dev/build/introduction/):
+Альтернатива встроенной сборке APK — облачный [EAS Build](https://docs.expo.dev/build/introduction/) (нужен аккаунт expo.dev):
 
 ```bash
 npx eas-cli@latest build --platform android --profile preview   # APK для установки
@@ -116,10 +130,9 @@ npm run lint        # ESLint
 npm test            # Jest: генератор, статистика, каталог, wger, ИИ-модуль
 ```
 
-CI (GitHub Actions) запускает эти проверки и собирает бандлы для Android и iOS.
+CI (GitHub Actions) запускает эти проверки, собирает бандлы для Android и iOS, а отдельный workflow собирает APK.
 
 ## Ограничения
 
-- Иконка и заставка пока стандартные, из шаблона Expo.
 - Интерфейс только на русском.
 - Клиент wger.de написан по документации публичного API. Живой ответ сервиса в среде разработки проверить не удалось, поэтому разбор ответа сделан с запасом на разные версии API.

@@ -30,6 +30,8 @@ export default function CalendarScreen() {
   const [picking, setPicking] = useState(false);
   const [repeat, setRepeat] = useState(false);
 
+  const doneKeys = useMemo(() => new Set(sessions.map((s) => `${dayKey(s.finishedAt)}|${s.workoutId}`)), [sessions]);
+
   const marks = useMemo(() => {
     const map = new Map<string, DayMarks>();
     const get = (k: string) => map.get(k) ?? { done: 0, planned: 0 };
@@ -37,9 +39,13 @@ export default function CalendarScreen() {
       const k = dayKey(s.finishedAt);
       map.set(k, { ...get(k), done: get(k).done + 1 });
     }
-    for (const p of schedule) map.set(p.date, { ...get(p.date), planned: get(p.date).planned + 1 });
+    // Запланированное, но уже выполненное в тот же день, отдельной отметкой не показываем.
+    for (const p of schedule) {
+      if (doneKeys.has(`${p.date}|${p.workoutId}`)) continue;
+      map.set(p.date, { ...get(p.date), planned: get(p.date).planned + 1 });
+    }
     return map;
-  }, [sessions, schedule]);
+  }, [sessions, schedule, doneKeys]);
 
   const monthStats = useMemo(() => {
     const inMonth = sessions.filter((s) => {
@@ -55,7 +61,7 @@ export default function CalendarScreen() {
 
   const daySessions = sessions.filter((s) => dayKey(s.finishedAt) === selected);
   const dayPlan = schedule
-    .filter((p) => p.date === selected)
+    .filter((p) => p.date === selected && !doneKeys.has(`${p.date}|${p.workoutId}`))
     .map((p) => ({ entry: p, workout: findWorkout({ workouts, catalog }, p.workoutId) }));
 
   const candidates = useMemo(() => {

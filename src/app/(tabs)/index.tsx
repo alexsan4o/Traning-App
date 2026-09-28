@@ -37,11 +37,13 @@ export default function Today() {
   const streak = useMemo(() => dayStreak(sessions), [sessions]);
   const weeks = useMemo(() => weekStreak(sessions, profile.weeklyTarget), [sessions, profile.weeklyTarget]);
 
+  const doneToday = sessions.filter((s) => dayKey(s.finishedAt) === today);
+  const doneIds = new Set(doneToday.map((s) => s.workoutId));
+  // Запланированная тренировка, уже выполненная сегодня, из плана уходит.
   const todayPlan = schedule
-    .filter((s) => s.date === today)
+    .filter((s) => s.date === today && !doneIds.has(s.workoutId))
     .map((s) => ({ entry: s, workout: findWorkout({ workouts, catalog }, s.workoutId) }))
     .filter((x) => x.workout);
-  const doneToday = sessions.filter((s) => dayKey(s.finishedAt) === today);
 
   const suggestion = useMemo(() => {
     const recent = new Set(sessions.slice(0, 5).map((s) => s.workoutId));
