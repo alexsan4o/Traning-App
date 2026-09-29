@@ -9,6 +9,7 @@ export type SportId =
   | 'swimming'
   | 'cycling'
   | 'fitness'
+  | 'weightlifting'
   | 'general';
 
 export type MuscleGroup =

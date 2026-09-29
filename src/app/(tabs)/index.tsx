@@ -15,17 +15,17 @@ import { dayKey, formatClock, MONTHS_GENITIVE, plural } from '../../lib/date';
 import { dayStreak, weeklyStats, weekStreak } from '../../lib/stats';
 import { findWorkout, useAppStore } from '../../store/useAppStore';
 import { colors, font, radius, spacing } from '../../theme';
-import type { Goal } from '../../types';
+import type { Goal, SportId } from '../../types';
 
 const WEEKDAYS_FULL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 
-const CLASSIC_GOALS: { goal: Goal; icon: IconName }[] = [
-  { goal: 'hypertrophy', icon: 'barbell-outline' },
-  { goal: 'fatloss', icon: 'flame-outline' },
-  { goal: 'toning', icon: 'body-outline' },
-  { goal: 'strength', icon: 'trophy-outline' },
+/** Быстрый вход в классические разделы библиотеки: фитнес по целям и «качалка». */
+const CLASSIC: { key: string; label: string; icon: IconName; sport: SportId; goal?: Goal }[] = [
+  { key: 'mass', label: goalLabels.hypertrophy, icon: 'barbell-outline', sport: 'fitness', goal: 'hypertrophy' },
+  { key: 'fatloss', label: goalLabels.fatloss, icon: 'flame-outline', sport: 'fitness', goal: 'fatloss' },
+  { key: 'toning', label: goalLabels.toning, icon: 'body-outline', sport: 'fitness', goal: 'toning' },
+  { key: 'weightlifting', label: SPORTS.weightlifting.name, icon: 'trophy-outline', sport: 'weightlifting' },
 ];
-const CLASSIC = BUILTIN_WORKOUTS.filter((w) => w.sport === 'fitness');
 
 export default function Today() {
   const profile = useAppStore((s) => s.profile);
@@ -164,16 +164,16 @@ export default function Today() {
 
       <SectionTitle title="Классические программы" />
       <View style={styles.quickGrid}>
-        {CLASSIC_GOALS.map(({ goal, icon }) => {
-          const count = CLASSIC.filter((w) => w.goal === goal).length;
-          const mine = CLASSIC.filter((w) => w.goal === goal && w.level === profile.level).length;
+        {CLASSIC.map(({ key, label, icon, sport, goal }) => {
+          const pool = BUILTIN_WORKOUTS.filter((w) => w.sport === sport && (!goal || w.goal === goal));
+          const mine = pool.filter((w) => w.level === profile.level).length;
           return (
             <QuickAction
-              key={goal}
+              key={key}
               icon={icon}
-              label={goalLabels[goal]}
-              hint={`${count} ${plural(count, 'программа', 'программы', 'программ')}${mine ? ` · ${mine} для уровня «${levelLabels[profile.level]}»` : ''}`}
-              onPress={() => router.push({ pathname: '/workouts', params: { sport: 'fitness', goal } })}
+              label={label}
+              hint={`${pool.length} ${plural(pool.length, 'программа', 'программы', 'программ')}${mine ? ` · ${mine} для уровня «${levelLabels[profile.level]}»` : ''}`}
+              onPress={() => router.push({ pathname: '/workouts', params: { sport, ...(goal ? { goal } : {}), t: String(Date.now()) } })}
             />
           );
         })}

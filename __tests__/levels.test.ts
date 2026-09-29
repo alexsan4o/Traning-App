@@ -33,6 +33,29 @@ describe('уровни по тренировочному стажу', () => {
   });
 });
 
+describe('тяжёлая атлетика', () => {
+  const wl = BUILTIN_WORKOUTS.filter((w) => w.sport === 'weightlifting');
+
+  it('есть программы для всех уровней и классический сплит по группам мышц', () => {
+    for (const level of ['beginner', 'intermediate', 'advanced'] as const) {
+      expect(wl.some((w) => w.level === level)).toBe(true);
+    }
+    // Грудь, спина, ноги, плечи и руки — каждой группе свой день.
+    const split = ['chest', 'back', 'quads', 'shoulders', 'arms'] as const;
+    for (const muscle of split) {
+      expect(wl.some((w) => w.goal === 'hypertrophy' && w.exercises.filter((e) => e.muscles[0] === muscle).length >= 3)).toBe(true);
+    }
+  });
+
+  it('программы построены на штанге и тренажёрах зала', () => {
+    for (const w of wl) {
+      const main = w.exercises.filter((e) => phaseOf(e.category) !== 'prep');
+      const withIron = main.filter((e) => (getBuiltinExercise(e.exerciseId)?.equipment.length ?? 0) > 0);
+      expect(withIron.length / main.length).toBeGreaterThanOrEqual(0.6);
+    }
+  });
+});
+
 describe('адаптация программы под уровень', () => {
   const base = program('fitness-mass-fullbody');
 
