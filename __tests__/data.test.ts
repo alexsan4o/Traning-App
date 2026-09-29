@@ -31,9 +31,22 @@ describe('встроенная библиотека', () => {
     }
   });
 
-  it('для каждого вида спорта есть хотя бы одна программа', () => {
+  it('для каждого вида спорта есть программы всех уровней', () => {
     for (const sport of SPORT_LIST) {
-      expect(BUILTIN_WORKOUTS.some((w) => w.sport === sport.id)).toBe(true);
+      const own = BUILTIN_WORKOUTS.filter((w) => w.sport === sport.id);
+      expect([sport.id, own.length >= 4]).toEqual([sport.id, true]);
+      for (const level of ['beginner', 'intermediate', 'advanced']) {
+        expect([sport.id, level, own.some((w) => w.level === level)]).toEqual([sport.id, level, true]);
+      }
+    }
+  });
+
+  it('в библиотеке не меньше 200 упражнений, и у каждого вида спорта есть свои', () => {
+    expect(BUILTIN_EXERCISES.length).toBeGreaterThanOrEqual(200);
+    for (const sport of SPORT_LIST) {
+      // «Свои» — упражнения, отмеченные не более чем для трёх видов спорта.
+      const specific = BUILTIN_EXERCISES.filter((e) => e.sports.includes(sport.id) && e.sports.length <= 3);
+      expect([sport.id, specific.length >= 2]).toEqual([sport.id, true]);
     }
   });
 });
