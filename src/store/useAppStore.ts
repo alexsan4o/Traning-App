@@ -35,6 +35,7 @@ export const DEFAULT_SETTINGS: Settings = {
   voice: true,
   keepAwake: true,
   restNotifications: true,
+  animations: true,
 };
 
 export interface CatalogCache {

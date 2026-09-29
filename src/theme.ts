@@ -54,6 +54,26 @@ export const chart = {
   grid: '#232D3B',
 };
 
+/** Палитра анимированного манекена: тело, подсветка мышц и снаряды. */
+export const figure = {
+  bodyNear: '#C3CFDE',
+  bodyFar: '#5B6B80',
+  muscleNear: '#FB923C',
+  muscleFar: '#C2410C',
+  secondaryNear: '#F6B98A',
+  secondaryFar: '#9A5B32',
+  metal: '#CBD5E1',
+  plate: '#334155',
+  equip: '#475569',
+  equipDark: '#1E293B',
+  shadow: 'rgba(0,0,0,0.35)',
+  band: '#F472B6',
+  ballFootball: '#F1F5F9',
+  ballBasket: '#EA580C',
+  ballMed: '#7C3AED',
+  ballSmall: '#FDE047',
+};
+
 export function rampColor(value: number, max: number): string {
   if (value <= 0 || max <= 0) return chart.empty;
   const idx = Math.min(chart.ramp.length - 1, Math.floor((value / max) * chart.ramp.length));

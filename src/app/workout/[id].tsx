@@ -171,7 +171,7 @@ export default function WorkoutDetails() {
       <Card>
         <SectionTitle title="Упражнения" />
         <Text style={font.small}>
-          Нажмите на упражнение, чтобы увидеть подсказки по технике. Кнопка ⇄ заменяет упражнение на похожее.
+          Нажмите на упражнение, чтобы увидеть анимацию и подсказки по технике. Кнопка ⇄ заменяет упражнение на похожее.
         </Text>
         {workout.exercises.map((e, i) => {
           const openable = !!getBuiltinExercise(e.exerciseId) || e.exerciseId.startsWith('wger_');

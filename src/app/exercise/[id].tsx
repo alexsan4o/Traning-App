@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Text, View } from 'react-native';
 
 import { BodyMap } from '../../components/BodyMap';
+import { ExerciseAnimation } from '../../components/ExerciseAnimation';
 import { Badge, Card, EmptyState, Screen, SectionTitle } from '../../components/ui';
 import { getBuiltinExercise } from '../../data/exercises';
 import { categoryLabels, equipmentLabels } from '../../data/labels';
@@ -67,6 +68,7 @@ export default function ExerciseDetails() {
         <Badge label={exercise.equipment.length ? exercise.equipment.map((e) => equipmentLabels[e]).join(', ') : 'Без инвентаря'} />
         {exercise.source === 'wger' ? <Badge label="wger.de" color={colors.accent} /> : null}
       </View>
+      <ExerciseAnimation exercise={exercise} height={240} />
       {exercise.imageUrl ? (
         <Image source={{ uri: exercise.imageUrl }} style={{ width: '100%', height: 220, borderRadius: 16, backgroundColor: '#fff' }} resizeMode="contain" />
       ) : null}

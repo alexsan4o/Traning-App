@@ -6,6 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressRing } from '../../components/charts';
+import { ExerciseAnimation } from '../../components/ExerciseAnimation';
 import { Badge, Button, Card, EmptyState, IconButton, Stepper } from '../../components/ui';
 import { categoryLabels, muscleLabels } from '../../data/labels';
 import { useNow } from '../../hooks/useNow';
@@ -261,6 +262,8 @@ export default function Player() {
   };
 
   const phaseColor = chart.phase[phaseOf(item.category)];
+  // С анимацией кольцо счётчика чуть меньше, чтобы всё помещалось на экран.
+  const ringSize = settings.animations ? 180 : 210;
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
@@ -313,6 +316,7 @@ export default function Player() {
             </View>
             <Card style={{ alignSelf: 'stretch' }}>
               <Text style={font.small}>Далее</Text>
+              {settings.animations ? <ExerciseAnimation exercise={item} height={150} /> : null}
               <Text style={font.h3}>{item.name}</Text>
               <Text style={font.dim}>
                 Подход {setNumber} из {item.sets} · {describeTarget(item)}
@@ -362,6 +366,8 @@ export default function Player() {
               </View>
             </View>
 
+            {settings.animations ? <ExerciseAnimation exercise={item} height={200} /> : null}
+
             {item.kind === 'reps' ? (
               <View style={styles.center}>
                 <Pressable
@@ -373,7 +379,7 @@ export default function Player() {
                   accessibilityLabel={`Повторений: ${count}. Нажмите, чтобы добавить`}
                   style={({ pressed }) => [styles.counter, pressed && { transform: [{ scale: 0.97 }] }]}
                 >
-                  <ProgressRing size={210} stroke={12} progress={count / Math.max(1, item.reps ?? 10)} color={colors.primary}>
+                  <ProgressRing size={ringSize} stroke={12} progress={count / Math.max(1, item.reps ?? 10)} color={colors.primary}>
                     <Text style={styles.bigCount}>{count}</Text>
                     <Text style={font.dim}>из {item.reps ?? 10} повт.</Text>
                   </ProgressRing>
@@ -388,7 +394,7 @@ export default function Player() {
               <View style={styles.center}>
                 <Pressable onPress={toggleWork} accessibilityRole="button" accessibilityLabel={workEndsAt ? 'Пауза' : 'Старт'}>
                   <ProgressRing
-                    size={210}
+                    size={ringSize}
                     stroke={12}
                     progress={(workLeft ?? 0) / Math.max(1, (item.durationSec ?? 30) * (item.perSide ? 2 : 1))}
                     color={colors.primary}

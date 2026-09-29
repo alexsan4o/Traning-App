@@ -194,6 +194,8 @@ export interface Settings {
   voice: boolean;
   keepAwake: boolean;
   restNotifications: boolean;
+  /** Показывать анимацию упражнений во время тренировки. */
+  animations: boolean;
 }
 
 /** Состояние незавершённой тренировки — переживает перезапуск приложения. */

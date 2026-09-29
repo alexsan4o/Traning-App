@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { categoryLabels, muscleLabels } from '../data/labels';
+import { useAppStore } from '../store/useAppStore';
+import { ExerciseAnimation } from './ExerciseAnimation';
 import { describeTarget } from '../lib/workout';
 import { chart, colors, font, phaseOf } from '../theme';
 import type { WorkoutExercise } from '../types';
@@ -21,10 +23,12 @@ export function ExerciseItem({
   onSwap?: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const animations = useAppStore((s) => s.settings.animations);
   const tips = item.tips ?? [];
+  const expandable = tips.length > 0 || animations;
   return (
     <View style={styles.wrap}>
-      <Pressable style={styles.row} onPress={() => (tips.length ? setOpen(!open) : onOpen?.())} accessibilityRole="button">
+      <Pressable style={styles.row} onPress={() => (expandable ? setOpen(!open) : onOpen?.())} accessibilityRole="button">
         <View style={[styles.index, { borderColor: chart.phase[phaseOf(item.category)] }]}>
           <Text style={styles.indexText}>{index + 1}</Text>
         </View>
@@ -37,7 +41,7 @@ export function ExerciseItem({
             {categoryLabels[item.category]} · {item.muscles.map((m) => muscleLabels[m]).join(', ')}
           </Text>
         </View>
-        {tips.length ? <Ionicons name={open ? 'chevron-up' : 'bulb-outline'} size={20} color={colors.warning} /> : null}
+        {expandable ? <Ionicons name={open ? 'chevron-up' : animations ? 'play-circle-outline' : 'bulb-outline'} size={20} color={colors.warning} /> : null}
         {onSwap ? (
           <Pressable
             onPress={onSwap}
@@ -52,6 +56,7 @@ export function ExerciseItem({
       </Pressable>
       {open ? (
         <View style={styles.tips}>
+          {animations ? <ExerciseAnimation exercise={item} height={170} /> : null}
           {tips.map((t) => (
             <Text key={t} style={styles.tip}>
               • {t}

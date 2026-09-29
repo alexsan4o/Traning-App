@@ -193,6 +193,12 @@ export default function SettingsScreen() {
             onChange={(defaultRestSec) => setSettings({ defaultRestSec })}
           />
         </View>
+        <Toggle
+          label="Анимация упражнений"
+          hint="Манекен показывает технику, рабочие мышцы подсвечены"
+          value={settings.animations}
+          onChange={(animations) => setSettings({ animations })}
+        />
         <Toggle label="Вибрация" value={settings.vibration} onChange={(vibration) => setSettings({ vibration })} />
         <Toggle label="Голосовые подсказки" hint="«Отдых окончен», обратный отсчёт" value={settings.voice} onChange={(voice) => setSettings({ voice })} />
         <Toggle label="Не гасить экран" hint="Во время тренировки" value={settings.keepAwake} onChange={(keepAwake) => setSettings({ keepAwake })} />
